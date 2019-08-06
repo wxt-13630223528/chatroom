@@ -1,0 +1,26 @@
+import java.sql.Array;
+import java.util.Arrays;
+/**
+     * 基本思想：每一步将一个待排序的元素，按其排序码的大小，
+     * 插入到前面已经排好序的一组元素的合适位置上去，直到元素全部插完为止。
+     * @param array
+     */
+public class TestSort {
+    public static void insertSort(int[] array){
+        for(int i = 1;i<array.length;i++){
+            int end = i-1;
+            int key = array[i];
+            while (end>=0 && key<array[end]){    // //找插入位置，元素向后搬移
+                array[end+1] = array[end];
+                end--;
+            }
+            array[end+1] = key;   //  // 插入数据
+        }
+    }
+    public static void main(String[] args) {
+        int array[] = {12,3,5,2,4,6,8,0,23,564,345};
+        System.out.println(Arrays.toString(array));
+        insertSort(array);
+        System.out.println(Arrays.toString(array));
+    }
+}

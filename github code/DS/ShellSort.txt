@@ -1,0 +1,24 @@
+  /**
+     * 希尔排序
+     *  场景 ： 数据比较大，不是接近有序
+     * 空间复杂度 O（1）
+     * 时间复杂度 O（n^2）
+     * 不稳定（隔位置插元素）
+     * @param array
+     */
+   public void ShellSort(int[] array){
+        int gap = array.length;
+        while (gap>1){
+             gap = gap/3+1;
+             for(int i = gap;i<array.length;i++){
+                 int key = array[i];
+                 int end = i-gap;
+                 while (end>=0 && key<array[end] ){
+                     array[end+1] = array[end];
+                     end -=gap;
+                 }
+                 array[end+gap] = key;
+             }
+
+        }
+    }

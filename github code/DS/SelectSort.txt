@@ -1,0 +1,21 @@
+ /**选择排序
+     * 每一趟（第 i 趟，i= 0，1，……，n-2） 在后面n-i 个待排序的数据元素集合中选出关键码最小的数据元素，
+     * 作为有序元素序列的第i个元素，待到第n-2 趟做完，待排序元素集中只剩下1个元素，排序结束。
+     * @param array
+     */
+    public  void SelectSort(int[] array){
+
+        for(int i = 0;i<array.length-1;i++){  //总循环次数
+            int maxpos = 0;
+            for(int j = 1;j<array.length-i;j++){
+                if(array[maxpos]<array[j]){
+                    maxpos = j;
+                }
+            }
+            if(maxpos!=array.length-i){
+                int tmp = array[maxpos];
+                array[maxpos] = array[array.length-i-1];
+                array[array.length-i-1] = array[maxpos];
+            }
+        }
+    }
