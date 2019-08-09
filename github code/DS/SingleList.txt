@@ -1,0 +1,406 @@
+class Solution {
+    public MySingleListImpl() {
+        this.head = null;
+    }
+
+    class Node{
+        private int data;
+        public Node next;
+
+        public Node(int data) {
+            this.data = data;
+            this.next = null;
+        }
+
+        public int getData() {
+            return data;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+    }
+
+    public Node getHead() {
+        return head;
+    }
+
+    private Node head;
+    int size;
+	
+ // 头插
+    @Override
+    public void addFirst(int data) {
+        Node node = new Node(data);
+        //第一次插入数据
+        if(this.head==null){
+            this.head = node;
+        }else {
+            node.next = head;
+            head = node;
+        }
+        size++;
+    }
+	
+//尾插
+    @Override
+    public void addLast(int data) {
+        Node node = new Node(data);
+        Node cur = head;
+        //如果第一次插
+        if(cur == null){
+            this.head = node;
+        }else {
+            while (cur.next!=null){
+                cur = cur.next;
+            }
+            cur.next = node;
+        }
+        size++;
+    }
+	
+		
+    public Node searchIndex(int index){
+        checkIndex(index);
+       Node cur = this.head;
+       for(int i = 0;i<index;i++){
+           cur = cur.next;
+       }
+       return cur;
+    }
+    public void checkIndex(int index){
+        if(index<0 || index >=getLength())
+            throw new UnsupportedOperationException("下标不合法");
+    }
+	
+	//指定位置插
+    @Override
+    public void  addIndex(int index, int data) {
+        checkIndex(index);
+        Node newNode = new Node(data);
+        if(index==0){
+            addFirst(data);
+        }
+        Node prevNode = searchIndex(index-1);
+        Node nextNode = prevNode.next;
+        prevNode.next = newNode;
+        newNode.next = nextNode;
+         size++;
+
+    }
+
+    @Override
+    public boolean contains(int key) {
+        Node cur = this.head;
+        for(int i = 0;i<size;i++){
+            if(cur.data == key){
+                return true;
+            }
+            cur = cur.next;
+        }
+        return false;
+    }
+    private Node searchPre(int key){
+        //1.是不是第一个节点  if(head.data == key)
+        Node pre = this.head;
+        if(pre.data == key){
+            return this.head;
+        }
+        while (pre.next!=null){
+            if(pre.next.data==key){
+                return pre;
+            }
+            pre = pre.next;
+        }
+        return null;
+
+    }
+    @Override
+    public int remove(int key) {
+        Node pre = searchPre(key);
+        int oldData = 0;
+        if(pre == null){
+            throw new UnsupportedOperationException("没有找到");
+        }
+        if(pre == this.head && pre.data == key){
+            oldData = pre.data;
+            this.head = pre.next;
+            size--;
+            return oldData;
+        }
+        Node delNode = pre.next;
+        pre.next = delNode.next;
+        size--;
+        return delNode.data;
+
+
+    }
+
+
+    // OJ 面试题1  删除一个链表所有值为key的节点
+    @Override
+    public void removeAllKey(int key) {
+         Node pre = this.head;
+         Node cur =this.head.next;
+         while (cur!=null){
+             if (cur.data == key){
+                 pre.next = cur.next;
+                 cur = cur.next;
+                 size--;
+             }else {
+                 pre = cur;
+                 cur = cur.next;
+             }
+
+         }
+         if(this.head.data==key){
+             head = head.next;
+         }
+    }
+
+    @Override
+    public int getLength() {
+       return size;
+    }
+
+    @Override
+    public void display() {
+       Node cur = this.head;
+
+       while (cur!=null){
+           System.out.print(cur.data+" ");
+           cur = cur.next;
+       }
+        System.out.println();
+    }
+
+    @Override
+    public void clear() {
+        while (this.head!=null){
+            Node cur = this.head.next;
+            this.head.next = null;
+            this.head = cur;
+        }
+    }
+    //一个有序链表，删除重复节点
+    public Node deleteDuplication(){
+        Node node = new Node(-1);  //虚拟节点
+        Node tmpHead = node;
+        Node cur = this.head;
+        while (cur!=null){
+            if(cur.next!=null && cur.data == cur.next.data){
+                while (cur.next!=null && cur.data == cur.next.data){
+                    cur = cur.next;
+                }
+                cur = cur.next;
+                tmpHead.next = cur;
+
+            }else {
+                //确定不为重复的节点
+                tmpHead.next = cur;
+                tmpHead = cur;
+                cur = cur.next;
+            }
+        }
+        return node.next;
+    }
+
+
+
+    //OJ  2   反转一个单链表
+    public Node reverseList(){
+       Node reverseHead = null; //反转后新的头节点
+        Node cur = this.head;  //cur代表当前需要反转的节点
+        Node prev = null;   //cur的前驱信息
+        while (cur!= null){
+            Node curNext = cur.next;
+           if(curNext == null){
+               reverseHead = cur;
+           }
+            cur.next = prev;
+            prev = cur;
+            cur = curNext;
+        }
+        return reverseHead;
+    }
+    //打印指定节点开始的数据
+    public void show(Node newHead){
+        Node cur = newHead;
+
+        while (cur!=null){
+            System.out.print(cur.data+" ");
+            cur = cur.next;
+        }
+        System.out.println();
+    }
+    //OJ 3 找到单链表的中间节点  方法1
+    public Node middleNode(){
+        Node cur = this.head;
+        int len = getLength()/2;
+        for(int i = 0;i<len;i++){
+            cur = cur.next;
+        }
+        return cur;
+    }
+    //OJ 4 找到单链表的倒数第k个节点
+    //
+    public Node findKthToTail(int k){
+       if(this.head==null || k<=0 ){
+           return null;
+       }
+        Node fast = this.head;
+        Node slow = this.head;
+
+        for(int i = 0;i<k-1;i++){
+            if(fast.next!=null){
+                fast = fast.next;
+            }else{
+                System.out.println("没有这个节点");
+                return null;
+            }
+        }
+        while (fast.next!=null){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+    //OJ 6 给定x为基准将链表分割成两部分，所有小于x的节点排在大于等于x的节点之前
+
+    public Node partition(int x){
+        Node beforeStart = null;
+        Node beforeEnd = null;
+        Node lastStart = null;
+        Node lastEnd = null;
+        Node cur = this.head;
+        while (cur!=null){
+            Node curNext = cur.next;
+            cur.next = null;
+            if(cur.data < x){   //前半部分
+                if(beforeStart==null){  //放第一个节点
+                    beforeStart = cur;
+                    beforeEnd = beforeStart;
+                } else {
+                    beforeEnd.next = cur;
+                    beforeEnd = cur;
+                }
+            }else {  //后半部分
+                if(lastStart ==null){  //放第一个节点
+                    lastStart = cur;
+                    lastEnd = cur;
+                } else {
+                    lastEnd.next = cur;
+                    lastEnd = lastEnd.next;
+                }
+            }
+            cur = curNext;
+        }
+        if(beforeStart == null){  //如果没有比x小的
+            return lastStart;
+        }
+        beforeEnd.next = lastStart;  // 拼接单链表
+
+        return beforeStart;
+    }
+    //7. 删除有序链表中重复节点，不保留重复节点，返回头指针
+    public Node delectDuplication(){
+        Node node = new Node(-1);
+        Node cur = this.head;
+        Node tmpHead = node;  //虚拟节点
+        while (cur!=null){
+            if(cur.next!=null && cur.data == cur.next.data){
+                while (cur.next!=null && cur.data == cur.next.data){
+                    cur = cur.next;
+                }
+                cur = cur.next;
+                tmpHead.next = cur;
+            } else {
+                //确定不为重复节点
+                tmpHead.next = cur;
+                tmpHead = cur;
+                cur = cur.next;
+            }
+        }
+        return node.next;
+
+    }
+    //OJ 链表的回文结构
+    public boolean chkPalindrme(){
+        Node fast = this.head;
+        Node slow = this.head;
+        while (fast!=null && fast.next!=null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        //slow指向中间节点
+        Node p = slow.next;
+        Node pNext = p.next;
+        while (p!=null){  //链表后半部分逆置
+            p.next = slow;
+            slow = p;
+            p = p.next;
+            if(p!=null){
+                pNext = p.next;
+            }
+        }
+        //后半部分已经逆置
+        while (this.head != slow){
+            if(this.head.data!=slow.data){
+                return false;
+            }
+            if(this.head.next==slow){ //偶数个
+                return true;
+            }
+            head = head.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+   //创建一个带环链表
+    public void createLoop(){
+        Node cur = this.head;
+        while (cur.next!=null){
+            cur = cur.next;
+        }
+        cur.next = head.next.next.next;
+    }
+
+    //OJ  9  两个单链表相交，找到相交节点
+    // TestDemo中实现
+    // OJ 10 单链表是否有环
+    public boolean hasCycle(){
+        Node fast = this.head;
+        Node slow = this.head;
+        while (fast!=null && fast.next!=null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(fast == slow){
+                return true;
+            }
+        }
+        return false;
+    }
+    //OJ 11 求链表入环的第一个结点，无环则返回null
+    public Node detectCycle(){
+        Node fast = this.head;
+        Node slow = this.head;
+        while (fast!=null && fast.next!=null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(fast == slow){
+                break;
+            }
+
+        }
+        if(fast==null||fast.next==null){
+            return null;
+        }
+        slow = this.head;
+        while (fast!=slow){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+}
