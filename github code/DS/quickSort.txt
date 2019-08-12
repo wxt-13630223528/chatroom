@@ -1,0 +1,113 @@
+    public static int  partion(int[] array,int begin,int end){
+        int key = array[end];
+        while (begin<end){
+            while(array[begin]<= key && begin<end){
+                begin++;
+            }
+            if(begin>=end){
+                break;
+            }else {
+                array[end] = array[begin];
+            }
+            while (array[end]>= key && begin<end){
+                end--;
+            }
+            if(end>=begin){
+                break;
+            }else {
+                array[begin] = array[end];
+            }
+        }
+        array[end] = key;
+        return end;
+    }
+    public static void swap(int[] array,int low,int high){
+        int tmp = array[low];
+        array[low] = array[high];
+        array[high] = tmp;
+    }
+    public static void medianOfThree(int[]array,int low,int high){
+        int mid = (low+high)/2;
+        //array[mid]<=array[low]<=array[high]
+        if(array[mid]>array[low]){
+            swap(array,mid,low);
+        }
+ 
+
+        if(array[low]>array[high]){
+            swap(array,low,high);
+        }//array[low]<=array[high]
+    }
+    public  static void insertSort2(int array[],int begin,int end){
+       for(int i = begin+1;i<=end;i++){
+           int tmp = array[i];
+           int j = 0;
+           for(j = i-1;j>=begin;j--){
+               if(array[j]>tmp){
+                   array[j+1] = array[j];
+               }else {
+                   break;
+
+               }
+           }
+           array[j+1] = tmp;
+       }
+
+    }
+    public static void quick(int[] array,int begin,int end){
+        if(end-begin+1<=16){
+            insertSort2(array,begin,end);
+            return;
+        }
+         medianOfThree(array,begin,end); //三数取中法
+         int par = partion(array,begin,end);
+         //递归左边
+        if(par>begin+1){  //左边有两个及以上元素
+            quick(array,begin,par-1);
+        }
+        if(par<end-1){   //右边有两个及以上元素
+            quick(array,par+1,end);
+        }
+
+
+    }
+    public static void quickSort(int[] array){
+        
+        quick(array,0,array.length-1);
+    }
+
+//--------------------------------------------------------------------------
+
+/**
+     * 非递归快排
+     * @param
+     */
+    public static void quickSort1No(int[] array){
+        Stack<Integer> stack = new Stack<>();
+        int low = 0;
+        int high = array.length-1;
+        int par = partion(array,low,high);
+        if(par>low+1){
+            stack.push(low);
+            stack.push(par-1);
+        }
+        if(par<high-1){
+            stack.push(par+1);
+            stack.push(high);
+        }
+        while (!stack.empty()){
+            high = stack.pop();
+            low = stack.pop();
+            par = partion(array,low,high);
+
+            if(par>low+1){
+                stack.push(low);
+                stack.push(par-1);
+            }
+            if(par<high-1){
+                stack.push(par+1);
+                stack.push(high);
+            }
+
+        }
+    }
